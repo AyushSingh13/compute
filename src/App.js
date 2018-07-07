@@ -7,21 +7,58 @@ const Operand = styled.div`
   font-size: 5rem;
 `;
 
+const Page = styled.div`
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Calculation = styled.div`
+  display: flex;
+`;
+
 class App extends Component {
   state = {
-    operator: "add"
+    operator: "add",
+    userAnswer: ""
   };
 
-  componentDidMount = () =>
+  componentDidMount = () => this.updateAllOperands();
+
+  updateAllOperands = () =>
     this.setState({
       operand1: this.getRandomIntOperand(1, 10),
       operand2: this.getRandomIntOperand(1, 10)
     });
 
+  handleUserInput = event =>
+    this.setState({
+      userAnswer: event.target.value
+    });
+
+  isCorrectAnswer = () => {
+    if (
+      this.state.userAnswer ===
+      this.getCorrectAnswer(
+        this.state.operator,
+        this.state.operand1,
+        this.state.operand2
+      )
+    ) {
+      this.updateAllOperands();
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   getRandomIntOperand = (min, max) =>
     Math.floor(Math.random() * (max - min) + min);
 
   getOperatorSymbol = operatorType => {
+    console.log(operatorType);
     switch (operatorType) {
       case "add":
         return "+";
@@ -37,6 +74,7 @@ class App extends Component {
   };
 
   getCorrectAnswer = (operatorType, operand1, operand2) => {
+    console.log(operatorType, operand1, operand2);
     switch (operatorType) {
       case "add":
         return operand1 + operand2;
@@ -53,16 +91,20 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        {this.getCorrectAnswer(
-          this.state.operator,
-          this.state.operand1,
-          this.state.operand2
+      <Page>
+        <Calculation>
+          <Operand>{this.state.operand1}</Operand>
+          <Operand>{this.getOperatorSymbol(this.state.operator)}</Operand>
+          <Operand>{this.state.operand2}</Operand>
+        </Calculation>
+        <input type="text" onChange={() => this.handleUserInput} />
+        <button onClick={() => this.isCorrectAnswer}>Submit</button>
+        {this.isCorrectAnswer() ? (
+          <div>Correct answer!</div>
+        ) : (
+          <div>Wrong mate, sorry :/ </div>
         )}
-        <Operand>{this.state.operand1}</Operand>
-        <Operand>{this.getOperatorSymbol(this.state.operator)}</Operand>
-        <Operand>{this.state.operand2}</Operand>
-      </div>
+      </Page>
     );
   }
 }
