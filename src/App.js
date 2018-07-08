@@ -21,7 +21,7 @@ const Calculation = styled.div`
 
 class App extends Component {
   state = {
-    operator: "add",
+    operator: "sub",
     userAnswer: ""
   };
 
@@ -38,19 +38,17 @@ class App extends Component {
       userAnswer: event.target.value
     });
 
-  isCorrectAnswer = () => {
-    if (
-      this.state.userAnswer ===
-      this.getCorrectAnswer(
-        this.state.operator,
-        this.state.operand1,
-        this.state.operand2
-      )
-    ) {
+  isCorrectAnswer = () =>
+    Number(this.state.userAnswer) ===
+    this.getCorrectAnswer(
+      this.state.operator,
+      this.state.operand1,
+      this.state.operand2
+    );
+
+  handleSubmitAnswer = () => {
+    if (this.isCorrectAnswer()) {
       this.updateAllOperands();
-      return true;
-    } else {
-      return false;
     }
   };
 
@@ -58,7 +56,6 @@ class App extends Component {
     Math.floor(Math.random() * (max - min) + min);
 
   getOperatorSymbol = operatorType => {
-    console.log(operatorType);
     switch (operatorType) {
       case "add":
         return "+";
@@ -74,7 +71,6 @@ class App extends Component {
   };
 
   getCorrectAnswer = (operatorType, operand1, operand2) => {
-    console.log(operatorType, operand1, operand2);
     switch (operatorType) {
       case "add":
         return operand1 + operand2;
@@ -97,8 +93,8 @@ class App extends Component {
           <Operand>{this.getOperatorSymbol(this.state.operator)}</Operand>
           <Operand>{this.state.operand2}</Operand>
         </Calculation>
-        <input type="text" onChange={() => this.handleUserInput} />
-        <button onClick={() => this.isCorrectAnswer}>Submit</button>
+        <input type="text" onChange={this.handleUserInput} />
+        <button onClick={this.handleSubmitAnswer}>Submit</button>
         {this.isCorrectAnswer() ? (
           <div>Correct answer!</div>
         ) : (
