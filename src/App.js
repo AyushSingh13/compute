@@ -33,24 +33,23 @@ class App extends Component {
       operand2: this.getRandomIntOperand(1, 10)
     });
 
-  handleUserInput = event =>
-    this.setState({
-      userAnswer: event.target.value
-    });
+  handleUserInput = event => {
+    const answer = event.target.value;
+    if (answer !== "") {
+      if (this.isCorrectAnswer(Number(answer))) {
+        this.updateAllOperands();
+        this.answerBox.value = "";
+      }
+    }
+  };
 
-  isCorrectAnswer = () =>
-    Number(this.state.userAnswer) ===
+  isCorrectAnswer = answer =>
+    answer ===
     this.getCorrectAnswer(
       this.state.operator,
       this.state.operand1,
       this.state.operand2
     );
-
-  handleSubmitAnswer = () => {
-    if (this.isCorrectAnswer()) {
-      this.updateAllOperands();
-    }
-  };
 
   getRandomIntOperand = (min, max) =>
     Math.floor(Math.random() * (max - min) + min);
@@ -93,7 +92,11 @@ class App extends Component {
           <Operand>{this.getOperatorSymbol(this.state.operator)}</Operand>
           <Operand>{this.state.operand2}</Operand>
         </Calculation>
-        <input type="text" onChange={this.handleUserInput} />
+        <input
+          ref={el => (this.answerBox = el)}
+          type="number"
+          onChange={this.handleUserInput}
+        />
         <button onClick={this.handleSubmitAnswer}>Submit</button>
         {this.isCorrectAnswer() ? (
           <div>Correct answer!</div>
